@@ -2,34 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>MindSpark</title>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Welcome to MindSpark</h1>
-        </header>
-        <main>
-            <section id="about">
-                <h2>About Us</h2>
-                <p>Your content goes here...</p>
-            </section>
-            <section id="services">
-                <h2>Services</h2>
-                <p>Detail your services...</p>
-            </section>
-            <section id="contact">
-                <h2>Contact Us</h2>
-                <p>Contact information...</p>
-            </section>
-        </main>
-        <footer>
-            <p>&copy; 2026 MindSpark. All rights reserved.</p>
-        </footer>
-    </div>
-    <script src="scripts.js"></script>
+    <canvas id="starCanvas"></canvas>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#problem">The Problem</a></li>
+                <li><a href="#mission">Mission</a></li>
+                <li><a href="#curriculum">Curriculum</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#stakes">Stakes</a></li>
+                <li><a href="#signup">Sign Up</a></li>
+            </ul>
+        </nav>
+        <section id="hero">
+            <h1>The future needs better thinkers</h1>
+        </section>
+    </header>
+    <section id="problem">
+        <p>Did you know that 72% of students feel unprepared for the future?</p>
+    </section>
+    <section id="mission">
+        <h2>Our Mission</h2>
+        <p>To empower students with essential skills.</p>
+    </section>
+    <section id="curriculum">
+        <h2>Five Skills Curriculum</h2>
+        <div class="skills">
+            <div class="skill">Critical Thinking</div>
+            <div class="skill">Creativity</div>
+            <div class="skill">Collaboration</div>
+            <div class="skill">Communication</div>
+            <div class="skill">Problem Solving</div>
+        </div>
+    </section>
+    <section id="methodology">
+        <h2>Methodology</h2>
+        <ol>
+            <li>Understand the problem</li>
+            <li>Analyze data</li>
+            <li>Imagine solutions</li>
+            <li>Test ideas</li>
+            <li>Implement solutions</li>
+            <li>Reflect and adapt</li>
+        </ol>
+    </section>
+    <section id="stakes">
+        <h2>The Stakes</h2>
+        <p>Without action, the future is at risk.</p>
+    </section>
+    <section id="signup">
+        <h2>Sign Up for Updates</h2>
+        <form>
+            <input type="email" placeholder="Enter your email">
+            <button type="submit">Sign Up</button>
+        </form>
+    </section>
+    <footer>
+        <p>&copy; 2026 MindSpark. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
+
+/* CSS Styling for dark theme with gold accents */
+body {
+    background-color: #111;
+    color: gold;
+}
+nav ul {
+    background-color: #222;
+}
+nav ul li {
+    display: inline-block;
+    padding: 10px;
+}
+nav ul li a {
+    color: gold;
+}
+header #hero {
+    text-align: center;
+    padding: 100px 0;
+}
+.skills, .skill {
+    display: inline-block;
+    margin: 10px;
+    padding: 20px;
+    background-color: #333;
+}
+/* JavaScript for canvas animation and scroll reveal effects */
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+function drawStars() {
+  for(let i = 0; i < 100; i++) {
+    ctx.fillStyle = 'gold';
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+drawStars();
