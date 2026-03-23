@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MindSpark — The Future Needs Better Thinkers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#04040a;
+  --paper:#f4efe6;
+  --paper2:#ede7db;
+  --gold:#c9922a;
+  --gold2:#e8b84b;
+  --gold-light:#f5d78e;
+  --dim:#8a7f72;
+  --border:rgba(201,146,42,0.2);
+  --r:2px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--ink);
+  color:var(--paper);
+  overflow-x:hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ── CANVAS ── */
+#cosmos{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.5}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 6%;height:64px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  background:rgba(4,4,10,0.8);
+  backdrop-filter:blur(20px);
+}
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;font-weight:600;letter-spacing:0.04em;
+  color:var(--paper);cursor:pointer;
+}
+.logo span{color:var(--gold2)}
+.nav-r{display:flex;align-items:center;gap:2rem}
+.nav-r a{
+  font-size:0.82rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;
+  color:rgba(244,239,230,0.45);text-decoration:none;transition:color 0.2s;
+}
+.nav-r a:hover{color:var(--paper)}
+.nav-cta{
+  font-family:'DM Mono',monospace;font-size:0.78rem;font-weight:500;
+  letter-spacing:0.04em;color:var(--gold2) !important;
+  border:1px solid rgba(232,184,75,0.4);
+  padding:8px 20px;border-radius:1px;
+  transition:background 0.2s !important;
+}
+.nav-cta:hover{background:rgba(232,184,75,0.08) !important}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:center;
+  padding:0 6%;padding-top:64px;
+  position:relative;z-index:1;
+}
+.hero-overline{
+  font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:500;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--gold2);margin-bottom:2.5rem;
+  display:flex;align-items:center;gap:12px;
+  opacity:0;animation:rise 0.8s 0.2s ease forwards;
+}
+.hero-overline::before{
+  content:'';display:block;width:40px;height:1px;background:var(--gold2);
+}
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.2rem,8.5vw,7.5rem);
+  font-weight:300;line-height:1.05;
+  letter-spacing:-0.01em;
+  max-width:900px;
+  opacity:0;animation:rise 1s 0.4s ease forwards;
+}
+.hero h1 em{font-style:italic;color:var(--gold2)}
+.hero h1 strong{font-weight:600}
+.hero-body{
+  font-size:clamp(1rem,1.8vw,1.2rem);
+  font-weight:300;color:rgba(244,239,230,0.6);
+  line-height:1.8;max-width:520px;
+  margin-top:2.5rem;margin-bottom:3rem;
+  opacity:0;animation:rise 0.8s 0.7s ease forwards;
+}
+.hero-actions{
+  display:flex;gap:16px;flex-wrap:wrap;
+  opacity:0;animation:rise 0.8s 0.9s ease forwards;
+}
+.btn-gold{
+  font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:500;
+  letter-spacing:0.04em;background:var(--gold2);color:var(--ink);
+  border:none;padding:14px 36px;border-radius:1px;cursor:pointer;
+  transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;
+  display:inline-block;
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(232,184,75,0.3)}
+.btn-line{
+  font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:500;
+  letter-spacing:0.04em;background:transparent;color:var(--paper);
+  border:1px solid rgba(244,239,230,0.2);padding:14px 36px;border-radius:1px;
+  cursor:pointer;transition:border-color 0.2s;text-decoration:none;
+  display:inline-block;
+}
+.btn-line:hover{border-color:rgba(244,239,230,0.45)}
+
+.hero-scroll{
+  position:absolute;bottom:40px;left:6%;
+  font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;
+  text-transform:uppercase;color:rgba(244,239,230,0.25);
+  display:flex;align-items:center;gap:10px;
+  opacity:0;animation:rise 0.8s 1.2s ease forwards;
+}
+.hero-scroll::after{
+  content:'';display:block;width:1px;height:48px;
+  background:linear-gradient(to bottom,rgba(244,239,230,0.25),transparent);
+}
+
+/* ── SECTION COMMON ── */
+section{position:relative;z-index:1;padding:120px 6%}
+.s-num{
+  font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.2rem;display:block;
+}
+.s-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,5vw,4rem);
+  font-weight:300;line-height:1.15;letter-spacing:-0.01em;
+  margin-bottom:1.5rem;
+}
+.s-title em{font-style:italic;color:var(--gold2)}
+.s-body{
+  font-size:1.05rem;font-weight:300;
+  color:rgba(244,239,230,0.6);line-height:1.8;
+  max-width:560px;
+}
+
+/* ── DIVIDER ── */
+.divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  position:relative;z-index:1;
+}
+
+/* ── PROBLEM SECTION ── */
+.problem{background:var(--ink)}
+.problem-cols{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;
+  margin-top:64px;align-items:start;
+}
+.problem-stat{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(4rem,10vw,9rem);font-weight:300;
+  color:var(--gold2);line-height:1;
+  opacity:0.15;
+}
+.problem-text h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;font-weight:400;margin-bottom:1rem;line-height:1.3;
+}
+.problem-text p{
+  font-size:0.95rem;font-weight:300;
+  color:rgba(244,239,230,0.55);line-height:1.85;
+}
+
+/* ── MISSION ── */
+.mission{
+  background:linear-gradient(135deg,#09090f 0%,#0e0b06 100%);
+}
+.mission-inner{
+  max-width:840px;
+  border-left:2px solid var(--gold);
+  padding-left:48px;
+}
+.mission-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.6rem,3.5vw,2.8rem);
+  font-weight:300;font-style:italic;
+  line-height:1.5;color:var(--paper);
+  margin-bottom:2rem;
+}
+.mission-quote strong{font-weight:600;font-style:normal;color:var(--gold2)}
+.mission-attr{
+  font-family:'DM Mono',monospace;font-size:0.78rem;
+  letter-spacing:0.08em;color:var(--gold);
+}
+
+/* ── SKILLS ── */
+.skills-intro{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;
+  margin-bottom:80px;align-items:end;
+}
+.skills-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+}
+.skill-cell{
+  background:var(--ink);
+  padding:44px 36px;
+  transition:background 0.3s;
+  cursor:default;
+}
+.skill-cell:hover{background:#0d0b08}
+.skill-cell.featured{
+  grid-column:span 2;
+  background:linear-gradient(135deg,rgba(201,146,42,0.06),rgba(232,184,75,0.03));
+  display:flex;gap:48px;align-items:center;
+}
+.skill-num{
+  font-family:'DM Mono',monospace;font-size:0.68rem;
+  letter-spacing:0.12em;color:var(--gold);
+  margin-bottom:1.2rem;display:block;
+}
+.skill-icon{
+  font-size:2rem;margin-bottom:1.2rem;display:block;
+}
+.skill-cell h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.45rem;font-weight:600;
+  margin-bottom:0.7rem;line-height:1.2;
+}
+.skill-cell p{
+  font-size:0.88rem;font-weight:300;
+  color:rgba(244,239,230,0.5);line-height:1.8;
+}
+.skill-cell .skill-tag{
+  display:inline-block;margin-top:1rem;
+  font-family:'DM Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--gold);border-bottom:1px solid rgba(201,146,42,0.3);
+  padding-bottom:2px;
+}
+.featured-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(5rem,12vw,10rem);
+  font-weight:300;color:var(--gold2);opacity:0.12;
+  line-height:1;flex-shrink:0;
+}
+
+/* ── METHOD ── */
+.method{background:#060609}
+.method-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:48px;margin-top:72px;
+}
+.method-step{position:relative;padding-top:32px}
+.method-step::before{
+  content:'';position:absolute;top:0;left:0;
+  width:100%;height:1px;background:var(--border);
+  transition:background 0.3s;
+}
+.method-step:hover::before{background:var(--gold)}
+.method-step-n{
+  font-family:'DM Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.1em;color:var(--gold);
+  margin-bottom:1.2rem;display:block;
+}
+.method-step h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:400;
+  margin-bottom:0.8rem;line-height:1.25;
+}
+.method-step p{
+  font-size:0.88rem;font-weight:300;
+  color:rgba(244,239,230,0.5);line-height:1.8;
+}
+
+/* ── STAKES ── */
+.stakes{background:var(--ink)}
+.stakes-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;margin-top:72px;align-items:center;
+}
+.stakes-list{display:flex;flex-direction:column;gap:0}
+.stakes-item{
+  border-top:1px solid var(--border);
+  padding:28px 0;
+  display:flex;gap:24px;align-items:flex-start;
+  transition:border-color 0.3s;
+}
+.stakes-item:hover{border-color:var(--gold)}
+.stakes-item-n{
+  font-family:'DM Mono',monospace;font-size:0.7rem;
+  color:var(--gold);letter-spacing:0.08em;flex-shrink:0;padding-top:4px;
+}
+.stakes-item h4{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;font-weight:600;margin-bottom:6px;
+}
+.stakes-item p{
+  font-size:0.87rem;font-weight:300;
+  color:rgba(244,239,230,0.5);line-height:1.75;
+}
+.stakes-big{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.4rem,2.5vw,2rem);
+  font-weight:300;font-style:italic;
+  line-height:1.6;color:rgba(244,239,230,0.7);
+}
+.stakes-big strong{font-weight:600;font-style:normal;color:var(--paper)}
+
+/* ── CTA ── */
+.cta-sec{
+  background:linear-gradient(135deg,#0a0804 0%,#05050c 100%);
+  text-align:center;padding:160px 6%;
+}
+.cta-sec h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.4rem,7vw,6rem);
+  font-weight:300;line-height:1.1;
+  letter-spacing:-0.01em;
+  margin-bottom:1.5rem;
+}
+.cta-sec h2 em{font-style:italic;color:var(--gold2)}
+.cta-sec p{
+  font-size:1.05rem;font-weight:300;
+  color:rgba(244,239,230,0.5);line-height:1.8;
+  max-width:480px;margin:0 auto 3rem;
+}
+.cta-form{
+  display:flex;gap:0;max-width:440px;margin:0 auto;
+}
+.cta-input{
+  flex:1;padding:14px 20px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(232,184,75,0.25);
+  border-right:none;
+  border-radius:1px 0 0 1px;
+  color:var(--paper);font-family:'DM Sans',sans-serif;
+  font-size:0.92rem;outline:none;
+  transition:border-color 0.2s;
+}
+.cta-input:focus{border-color:rgba(232,184,75,0.6)}
+.cta-input::placeholder{color:rgba(244,239,230,0.25)}
+.cta-submit{
+  font-family:'DM Mono',monospace;font-size:0.8rem;
+  letter-spacing:0.04em;background:var(--gold2);color:var(--ink);
+  border:none;padding:14px 24px;border-radius:0 1px 1px 0;
+  cursor:pointer;font-weight:500;white-space:nowrap;
+  transition:background 0.2s;
+}
+.cta-submit:hover{background:var(--gold-light)}
+.cta-note{
+  font-family:'DM Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.06em;color:rgba(244,239,230,0.2);
+  margin-top:1rem;
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--ink);border-top:1px solid rgba(255,255,255,0.04);
+  padding:40px 6%;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.foot-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;font-weight:600;color:rgba(244,239,230,0.4);
+}
+.foot-logo span{color:var(--gold)}
+footer p{
+  font-size:0.78rem;color:rgba(244,239,230,0.2);
+  font-family:'DM Mono',monospace;letter-spacing:0.04em;
+}
+.foot-links{display:flex;gap:24px}
+.foot-links a{
+  font-size:0.78rem;color:rgba(244,239,230,0.2);
+  text-decoration:none;font-family:'DM Mono',monospace;
+  letter-spacing:0.04em;transition:color 0.2s;
+}
+.foot-links a:hover{color:rgba(244,239,230,0.5)}
+
+/* ── ANIMATIONS ── */
+@keyframes rise{
+  from{opacity:0;transform:translateY(28px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.reveal{
+  opacity:0;transform:translateY(32px);
+  transition:opacity 0.9s ease,transform 0.9s ease;
+}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:32px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--gold2);color:var(--ink);
+  font-family:'DM Mono',monospace;font-size:0.82rem;letter-spacing:0.04em;
+  padding:12px 28px;border-radius:1px;z-index:999;
+  transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  pointer-events:none;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .problem-cols,.skills-intro,.stakes-row{grid-template-columns:1fr;gap:40px}
+  .skills-grid{grid-template-columns:1fr}
+  .skill-cell.featured{flex-direction:column;gap:16px}
+  .skill-cell.featured{grid-column:span 1}
+  .method-steps{grid-template-columns:1fr;gap:36px}
+  .nav-r a:not(.nav-cta){display:none}
+  .cta-form{flex-direction:column}
+  .cta-input{border-right:1px solid rgba(232,184,75,0.25);border-bottom:none;border-radius:1px 1px 0 0}
+  .cta-submit{border-radius:0 0 1px 1px;padding:14px}
+  footer{flex-direction:column;align-items:flex-start;gap:20px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="cosmos"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Mind<span>Spark</span></div>
+  <div class="nav-r">
+    <a href="#mission">Mission</a>
+    <a href="#skills">Skills</a>
+    <a href="#method">Method</a>
+    <a href="#join" class="nav-cta">Join the Mission →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overline">Est. 2026 — Building Humanity's Next Chapter</div>
+  <h1>The future needs<br><em>better thinkers.</em><br><strong>We build them.</strong></h1>
+  <p class="hero-body">MindSpark uses AI to teach children aged 6 and up the foundational skills that drive human civilisation forward — critical thinking, first principles, mathematics, physics, and financial literacy.</p>
+  <div class="hero-actions">
+    <a href="#join" class="btn-gold">Begin the Mission</a>
+    <a href="#skills" class="btn-line">Explore the Curriculum</a>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <span class="s-num">01 — The Problem</span>
+  <h2 class="s-title reveal">Most schools teach children<br><em>what</em> to think.<br>Not <em>how</em>.</h2>
+  <p class="s-body reveal">Rote memorisation, standardised tests, and passive learning produce graduates who can recall facts — but struggle to reason through problems they've never seen before. The world doesn't need more fact-storers. It needs thinkers, builders, and solvers.</p>
+  <div class="problem-cols">
+    <div class="reveal">
+      <div class="problem-stat">72%</div>
+      <br>
+      <div class="problem-text">
+        <h3>of children leave school without the critical thinking skills modern careers demand</h3>
+        <p>The gap between what schools teach and what the 21st century actually requires grows wider every year — and AI is accelerating that gap exponentially.</p>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="problem-stat">6</div>
+      <br>
+      <div class="problem-text">
+        <h3>is the age when curiosity and cognitive plasticity are at their most receptive peak</h3>
+        <p>The window for building foundational thinking habits is early. MindSpark meets children precisely at this moment — before habits calcify and curiosity dims.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MISSION -->
+<section class="mission" id="mission">
+  <span class="s-num">02 — The Mission</span>
+  <div class="mission-inner reveal">
+    <p class="mission-quote">
+      "Every generation inherits the world built by the last. The quality of that world depends entirely on whether the next generation can <strong>reason clearly, think deeply, and act wisely</strong> — in the face of problems we cannot yet imagine."
+    </p>
+    <div class="mission-attr">— The MindSpark Manifesto</div>
+  </div>
+  <br><br>
+  <p class="s-body reveal">MindSpark exists for one reason: to give every child — regardless of background — access to the cognitive tools that shape civilisation. Through AI-powered adaptive learning, personalised quests, and real intellectual challenge, we plant the seeds of the thinkers humanity urgently needs.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills" style="background:var(--ink);padding:120px 6%">
+  <div class="skills-intro">
+    <div>
+      <span class="s-num">03 — The Curriculum</span>
+      <h2 class="s-title reveal">Five skills that<br><em>move the world.</em></h2>
+    </div>
+    <p class="s-body reveal">Not chosen arbitrarily. These are the exact cognitive foundations shared by the scientists, engineers, entrepreneurs, and philosophers who have advanced human civilisation throughout history.</p>
+  </div>
+
+  <div class="skills-grid reveal">
+
+    <div class="skill-cell featured">
+      <div class="featured-num">01</div>
+      <div>
+        <span class="skill-icon">🧠</span>
+        <h3>Critical Thinking</h3>
+        <p>The master skill. The ability to examine claims, identify assumptions, weigh evidence, and arrive at sound conclusions — regardless of the subject. Every other skill on this list is amplified by it. Children who think critically become adults who are nearly impossible to mislead, manipulate, or stall.</p>
+        <span class="skill-tag">Foundation of all reasoning</span>
+      </div>
+    </div>
+
+    <div class="skill-cell">
+      <span class="skill-num">02</span>
+      <span class="skill-icon">⚛️</span>
+      <h3>First Principles Thinking</h3>
+      <p>Boil any problem down to its fundamental truths and build back up from there. Used by Aristotle, Newton, Tesla, and Elon Musk — it is the engine of genuine innovation and the antidote to assumption-driven thinking.</p>
+      <span class="skill-tag">How breakthroughs happen</span>
+    </div>
+
+    <div class="skill-cell">
+      <span class="skill-num">03</span>
+      <span class="skill-icon">∑</span>
+      <h3>Mathematics</h3>
+      <p>Not arithmetic for its own sake — but mathematics as a language for describing reality. From probability to geometry to calculus, numeracy underpins every field of human endeavour. Children fluent in mathematical thinking see patterns others miss entirely.</p>
+      <span class="skill-tag">The language of the universe</span>
+    </div>
+
+    <div class="skill-cell">
+      <span class="skill-num">04</span>
+      <span class="skill-icon">🌌</span>
+      <h3>Physics & Science</h3>
+      <p>Understanding how the physical world actually works — cause and effect, forces, energy, systems — builds intuition that transcends school. It is the difference between operating within the world and genuinely understanding it.</p>
+      <span class="skill-tag">How reality actually works</span>
+    </div>
+
+    <div class="skill-cell">
+      <span class="skill-num">05</span>
+      <span class="skill-icon">💰</span>
+      <h3>Financial Literacy</h3>
+      <p>Compound interest, risk, value, incentives — the concepts that govern economic life are almost entirely absent from conventional schooling. MindSpark teaches children to understand money as a system, not just a transaction. Financial freedom begins with financial understanding.</p>
+      <span class="skill-tag">The skill schools ignore most</span>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- METHOD -->
+<section class="method" id="method">
+  <span class="s-num">04 — The Method</span>
+  <h2 class="s-title reveal">AI that teaches children<br><em>to think,</em> not just to answer.</h2>
+  <p class="s-body reveal">MindSpark's AI doesn't give children answers. It asks better questions — guiding each child to arrive at understanding through their own reasoning, at precisely the right level of challenge for their mind.</p>
+
+  <div class="method-steps">
+    <div class="method-step reveal">
+      <span class="method-step-n">Step 01</span>
+      <h3>Adaptive Assessment</h3>
+      <p>We map each child's existing knowledge and cognitive strengths — not to grade them, but to meet them exactly where they are and build from there.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="method-step-n">Step 02</span>
+      <h3>Story-Driven Quests</h3>
+      <p>Every lesson is an adventure. Children solve real problems through narrative — because deep engagement is the only condition under which deep learning occurs.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="method-step-n">Step 03</span>
+      <h3>Socratic AI Coaching</h3>
+      <p>Three specialised AI coaches guide, challenge, and stretch each child's thinking — never replacing effort, always amplifying it. The goal is always genuine understanding.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="method-step-n">Step 04</span>
+      <h3>Progress Without Pressure</h3>
+      <p>Children advance at their own pace, building genuine mastery before moving forward. No child is left behind. No child is held back. Learning adapts to the child.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="method-step-n">Step 05</span>
+      <h3>Parent Visibility</h3>
+      <p>Parents see exactly what their child is learning, where they're thriving, and where they need encouragement — with insights they can actually act on.</p>
+    </div>
+    <div class="method-step reveal">
+      <span class="method-step-n">Step 06</span>
+      <h3>Skills That Transfer</h3>
+      <p>Every quest is designed to build transferable cognitive abilities — not just subject knowledge. Children learn how to learn. That is the ultimate compounding asset.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STAKES -->
+<section class="stakes">
+  <span class="s-num">05 — Why It Matters</span>
+  <div class="stakes-row">
+    <div>
+      <h2 class="s-title reveal">This is bigger than<br><em>school.</em></h2>
+      <div class="stakes-list reveal">
+        <div class="stakes-item">
+          <span class="stakes-item-n">01</span>
+          <div>
+            <h4>The challenges ahead are unprecedented</h4>
+            <p>Climate change, artificial intelligence, energy transitions, geopolitical complexity — the problems humanity faces in the next fifty years require a calibre of thinking that no previous generation has been asked to produce at scale.</p>
+          </div>
+        </div>
+        <div class="stakes-item">
+          <span class="stakes-item-n">02</span>
+          <div>
+            <h4>The talent gap is growing, not shrinking</h4>
+            <p>Across every field — science, engineering, medicine, policy — organisations are desperate for people who can think clearly, reason from first principles, and operate well under uncertainty. Schools are not producing them fast enough.</p>
+          </div>
+        </div>
+        <div class="stakes-item">
+          <span class="stakes-item-n">03</span>
+          <div>
+            <h4>Every child is a potential breakthrough</h4>
+            <p>The next great physicist, the engineer who cracks fusion, the economist who solves inequality — they are children right now. The only question is whether anyone invests in their mind early enough to unlock what they're capable of.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="stakes-big">"<strong>Give a child the right mental tools early enough</strong>, and you don't just change their life. You change what they go on to build, discover, and leave behind for everyone who comes after them."</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-sec" id="join">
+  <h2 class="reveal">Ready to invest in<br>the <em>next generation</em><br>of thinkers?</h2>
+  <p class="reveal">Join thousands of families giving their children a genuine intellectual foundation. Free to start. No credit card required.</p>
+  <div class="cta-form reveal">
+    <input class="cta-input" type="email" placeholder="Your email address" id="email-input"/>
+    <button class="cta-submit" onclick="handleJoin()">Begin →</button>
+  </div>
+  <p class="cta-note reveal">Free for all families · No ads · No data sold · Ever</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Mind<span>Spark</span> AI</div>
+  <p>© 2026 MindSpark AI — Building humanity's next chapter</p>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#">Mission</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── COSMOS CANVAS ──
+const canvas = document.getElementById('cosmos');
+const ctx = canvas.getContext('2d');
+let stars = [], W, H;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initStars(){
+  stars = [];
+  for(let i=0;i<180;i++){
+    stars.push({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.2+0.2,
+      o:Math.random()*0.6+0.1,
+      speed:Math.random()*0.15+0.05,
+      drift:Math.random()*0.3-0.15
+    });
+  }
+}
+
+function drawCosmos(){
+  ctx.clearRect(0,0,W,H);
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(244,239,230,${s.o})`;
+    ctx.fill();
+    s.y-=s.speed; s.x+=s.drift;
+    if(s.y<-2){s.y=H+2;s.x=Math.random()*W}
+    if(s.x<-2)s.x=W+2;
+    if(s.x>W+2)s.x=-2;
+  });
+  requestAnimationFrame(drawCosmos);
+}
+
+resize(); initStars(); drawCosmos();
+window.addEventListener('resize',()=>{resize();initStars()});
+
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}
+  });
+},{threshold:0.12});
+reveals.forEach(r=>obs.observe(r));
+
+// ── JOIN ──
+function handleJoin(){
+  const val = document.getElementById('email-input').value.trim();
+  if(!val||!val.includes('@')){showToast('Please enter a valid email.');return;}
+  showToast("🎉 You're on the list! We'll be in touch soon.");
+  document.getElementById('email-input').value='';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// Enter key on email
+document.getElementById('email-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter') handleJoin();
+});
+</script>
+</body>
+</html>
